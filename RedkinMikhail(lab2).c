@@ -56,12 +56,18 @@ int main(int argc, char *argv[])
     {
         filename=(char*)malloc(500*sizeof(char));
         printf("Enter file name.\n");
-        gets(filename);
+        fgets(filename,500*sizeof(char),stdin);
+        c=filename;
+        while ((*(c))!='\n') ++c;
+        *c='\0';
         system("CLS");
         while ((f = fopen(filename,"r"))==0)
         {
             printf("Enter correct file name!\n");
-            gets(filename);
+            fgets(filename,500*sizeof(char),stdin);
+            c=filename;
+            while ((*(c))!='\n') ++c;
+            *c='\0';
             system("CLS");
         }
     }
@@ -151,8 +157,6 @@ int main(int argc, char *argv[])
         }
         case 0:
         {
-            //for (i=0;line->length;++i)
-            //    printf("%u\n",popfront(line));
             free(commands);
             deletelistline(&line);
             ptr=0;
