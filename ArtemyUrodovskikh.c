@@ -3,7 +3,7 @@
 #include <string.h>
 #define N 1000
 #define T 256
-unsigned char *tape, *lpos, *rpos;
+char *tape, *lpos, *rpos;
 int i, c, tp, beginin, t = T;
 typedef char* position;
 
@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
 {
 	FILE *fp;
 	fp = fopen("input.txt", "r");		
-	char *commands[N], value;
+	char *commands[N];
 
 	for (i = 0; i < N; i++)
 		commands[i] = (char*) malloc (sizeof(char) * N); 
@@ -52,7 +52,7 @@ int main(int argc, char const *argv[])
 		else if (strstr("printc", commands[i]))
 			printf("%c", tape[tp]);
 		else if (strstr("get", commands[i]))
-			scanf("%c", tape[tp]);
+			scanf("%c", &tape[tp]);
 		else if (strstr("begin", commands[i]))
 			if (tape[tp] == 0)
 				while (!strstr("end", commands[i]))
