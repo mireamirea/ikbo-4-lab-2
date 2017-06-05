@@ -94,7 +94,7 @@ return 0;
 char* delprobel (char* s){
     char* a;
     int i, j;
-    a = (char*) malloc (sizeof(char)*5);
+    a = (char*) malloc (sizeof(char)*200);
     for(i = j = 0; s[i] != '\0'; i++)
         if(isalnum(s[i]))
             a[j++] = s[i];
@@ -108,7 +108,7 @@ int main(){
     int num = 0, i = 0;;
     char *fname = NULL;
 
-    FILE * file;
+    FILE *file;
     file = fopen("test.txt", "r");
     while (file == NULL){
         printf(" Error opening file\n Enter a new filename");
@@ -116,12 +116,13 @@ int main(){
         file=fopen(fname, "r");
     }
 
-    a=(char **) malloc ((num+1)*sizeof(char *));
+    a=(char **) malloc (sizeof(char*));
     while(fgets(s, 255, file)){
 
         if(s[0] != '*'){
+            a[num]=(char *) malloc (200*sizeof(char));
             a[num] = delprobel(s);
-            //a[num] = s;
+
             num++;
             a = (char**) realloc (a,(num+1)*sizeof(char*));
         }
@@ -135,7 +136,7 @@ int main(){
     for(i = 0; i < num; i++)
         free(a[num]);
     free(a);
-    printf("\n Tape : ");
+    printf("\nTape : ");
     for(i = 0; i < size; i++)
         printf("  %d", lenta[i]);
     return 0;
