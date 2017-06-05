@@ -2,11 +2,13 @@
 #include <stdlib.h> 
 #include <string.h> 
 
+int dei(char st[255]);
+
 int main(int argc, char **argv) {
 
 	FILE *fp;
 	char name[255];
-	int x, i = 0, size=256, sizenew, g, j, temp=0, iter=0, temp2;
+	int x, i = 0, size=256, sizenew, g, j, temp=0, iter=0;
 	char *a = NULL, tempa, tempb;
 
 	char *lent;
@@ -147,11 +149,10 @@ int main(int argc, char **argv) {
 
 	fclose(fp);
 	getchar();
-
+	return 0;
 }
 
 int dei(char st[255]) {
-	int i, g, h;
 	char s0[] ="movl";
 	char s1[] ="movr";
 	char s2[] ="inc";
@@ -174,5 +175,6 @@ int dei(char st[255]) {
 	if (strstr(st, s7) != NULL) { return 7; };
 	if (strstr(st, s8) != NULL) { return 8; };
 	if (strstr(st, s9) != NULL) { return 9; };
+	return EOF;
 }
 /*printf("GG\n");*/
