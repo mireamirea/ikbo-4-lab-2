@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 
 	FILE *fp;
 	char name[255];
-	int x, i = 0, size=256, sizenew, g, j, temp=0, iter=0;
+	int x, i = 0, size=256, sizenew = 256, g, j, temp=0, iter=0;
 	char *a = NULL, tempa, tempb;
 
 	char *lent;
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 			break;
 /*------------------------------------------------------------------------------------------------*/
 		case 2:
-			if (lent[i] == 255) {
+			if ((int)lent[i] == 255) {
 				printf("Overflow\nCell is reset to zero\n");
 				lent[i] = 0;
 /*				_sleep(3000);*/
