@@ -1,0 +1,14 @@
+inc
+inc
+movl
+movl
+print
+ inc
+* получили 3 в текущей €чейке
+ begin
+* инкрементируем текущую €чейку, пока не получим в ней 0
+ inc
+end
+	dec
+print
+print
