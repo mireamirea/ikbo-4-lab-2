@@ -1,0 +1,108 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+
+#define String 256 
+
+
+
+int main(int argc, char *argv[])  { 
+	char *List[1000]; 
+	char com[10];
+	int i, place = 0, begend, counter = 0, j = 0;; 
+	int n = 256; 
+	char *tape; 
+	FILE *f; 
+	f = fopen("commands.txt", "r"); 
+	for (i = 0; i < 1000; i++) 
+		List[i] = (char*)malloc(n * sizeof(char)); 
+	tape = (char*)malloc(n * sizeof(char)); 
+	for (i = 0; i < n; i++) 
+		tape[i] = 0; 
+	i = 0; 
+
+	while (fscanf(f, "%s", List[i]) == 1) 
+	i++; 
+	counter = i; 
+	for (i = 0; i < counter; i++) 
+	printf("%s\n", List[i]); 
+
+	i = 0; 
+	while (j < counter) { 
+		if (place >= String) { 
+			n += String; 
+			tape = realloc(tape, n * sizeof(char)); 
+		} 
+		else 
+		if (place < 0) { 
+			n += String; 
+			tape = realloc(tape, n * sizeof(char)); 
+			memcpy(tape, tape + String, String); 
+			place += String; 
+		}		 
+		int x;
+		if (strstr("movr", List[j]))
+			x = 1;
+		if (strstr("movl", List[j]))
+			x = 2;
+		if (strstr("inc", List[j]))
+			x = 3;
+		if (strstr("dec", List[j]))
+			x = 4;
+		if (strstr("print", List[j]))
+			x = 5;
+		if (strstr("get", List[j]))
+			x = 6;
+		if (strstr("begin", List[j]))
+			x = 7;
+		if (strstr("end", List[j]))
+			x = 8;	
+		if (strstr("printc", List[j]))					
+			x = 9;		
+		switch (x) {
+			case 1 :
+				place++;
+				break;
+			case 2 :
+				place--;
+				break;
+			case 3 :
+				if (tape[place] == 255) { 
+				printf("Overflow\n"); 
+				tape[place] = 0; 
+				} 
+				else tape[place] = tape[place] + 1;
+				break;
+			case 4 :
+				if (tape[place] == 0)
+				tape[place] = 0; 
+				else 
+				tape[place] = tape[place] - 1;
+				break;
+			case 5 :
+				printf("%d\n", tape[place]); 
+				break;
+			case 6 :
+				scanf("%d", &tape[place]); 
+				break;
+			case 7 :
+				if (tape[place] == 0) { 
+				while (!strstr("end", List[j]))
+					j++; 
+				}		 
+		    	else begend = j; 
+				break;
+			case 8 :
+				if (tape[place] != 0)
+				j = begend; 		 
+				break;
+			case 9 :
+				printf("%c", List[j]);
+            	break;	 				 	 		
+		}
+		j++; 
+	}
+	fclose(f); 
+	return 0; 
+}
+
