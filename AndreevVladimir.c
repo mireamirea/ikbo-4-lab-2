@@ -72,7 +72,6 @@ int main(int argc, char *argv[])
 
 
 	}
-	getchar();
 	fclose(f);
 	return 0;
 }
