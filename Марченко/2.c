@@ -2,38 +2,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-int *lenta;
-int size = 1;
 int loc = 0;
+int *tape;
+int sizeOfLenta = 1;
 
-int movl(void){
-    if (loc == 0){
-        int i;
-        int* tmp;
-        size++;
-        tmp = (int*) realloc (lenta, sizeof(int) * size);
-        if(tmp != NULL){
-            for (i = size - 1; i != 0; i--)
-                tmp[i]=tmp[i-1];
-            tmp[0] = 0;
-            lenta = tmp;
-        }
-        else
-            return 1;
-    }
-    else loc--;
-return 0;
-}
+
+
 
 int movr(void){
-    if (loc == (size - 1)){
-        int* tmp;
-        size++;
+    if (loc == (sizeOfLenta - 1)){
+        int* temp;
+        sizeOfLenta++;
         loc++;
-        tmp = (int*) realloc (lenta, sizeof(int) * size);
-        if(tmp != NULL){
-            tmp[size-1] = 0;
-            lenta = tmp;
+        temp = (int*) realloc (tape, sizeof(int) * sizeOfLenta);
+        if(temp != NULL){
+            temp[sizeOfLenta-1] = 0;
+            tape = temp;
         }
         else
             return 1;
@@ -42,47 +26,66 @@ int movr(void){
 return 0;
 }
 
+int movl(void){
+    if (loc == 0){
+        int i;
+        int* temp;
+        sizeOfLenta++;
+        temp = (int*) realloc (tape, sizeof(int) * sizeOfLenta);
+        if(temp != NULL){
+            for (i = sizeOfLenta - 1; i != 0; i--)
+                temp[i]=temp[i-1];
+            temp[0] = 0;
+            tape = temp;
+        }
+        else
+            return 1;
+    }
+    else loc--;
+return 0;
+}
+
 int inc (void) {
-    if(lenta[loc] < 255)
-        lenta[loc]++;
+    if(tape[loc] < 255)
+        tape[loc]++;
     else
-        lenta[loc] = 0;
+        tape[loc] = 0;
 return 0;
 }
 
 int dec (void) {
-    if(lenta[loc] > 0)
-        lenta[loc]--;
+    if(tape[loc] > 0)
+        tape[loc]--;
     else
-        lenta[loc] = 255;
+        tape[loc] = 255;
 return 0;
 }
 
-int commands (char** a, int first, int last){
+int doComand (char** a, int first, int last){
     int i, tmp = 0;
     for (i = first; i < last; i++){
-        if (strcmp(a[i], "movl") == 0)
-            movl();
-        else if (strcmp(a[i], "movr") == 0)
+        if (strcmp(a[i], "movr") == 0)
             movr();
+        else if (strcmp(a[i], "movl") == 0)
+            movl();
         else if (strcmp(a[i], "inc") == 0)
             inc();
         else if (strcmp(a[i], "dec") == 0)
             dec();
         else if (strcmp(a[i], "print") == 0)
-            printf("\n%d", lenta[loc]);
+            printf("\n%d", tape[loc]);
         else if (strcmp(a[i], "get") == 0){
                 printf("\nEnter symbol:");
-            lenta[loc] = getchar();
+            tape[loc] = getchar();
         }
         else if (strcmp(a[i], "printc") == 0)
-            printf("\n%c", lenta[loc]);
+            printf("\n%c", tape[loc]);
         else if (strcmp(a[i], "begin") == 0)
              tmp=i+1;
         else if (strcmp(a[i], "end") == 0)
             {
-                while (lenta[loc] != 0)
-                    commands(a, tmp, i);
+                while (tape[loc] != 0)
+                    doComand(a, tmp, i);
             }
         else
             printf("\nerror %s",a[i]);
@@ -91,7 +94,7 @@ int commands (char** a, int first, int last){
 return 0;
 }
 
-char* delprobel (char* s){
+char* delSpace (char* s){
     char* a;
     int i, j;
     a = (char*) malloc (sizeof(char)*200);
@@ -103,41 +106,41 @@ char* delprobel (char* s){
 }
 
 int main(){
+    int num = 0, i = 0;
     char s[255];
-    char **a;
-    int num = 0, i = 0;;
+    char **commands;
     char *fname = NULL;
 
-    FILE *file;
-    file = fopen("test.txt", "r");
-    while (file == NULL){
+    FILE *f;
+    f = fopen("test.txt", "r");
+    while (f == NULL){
         printf(" Error opening file\n Enter a new filename");
         scanf("%s", fname);
         file=fopen(fname, "r");
     }
 
-    a=(char **) malloc (sizeof(char*));
+    commands=(char **) malloc (sizeof(char*));
     while(fgets(s, 255, file)){
 
         if(s[0] != '*'){
-            a[num]=(char *) malloc (200*sizeof(char));
-            a[num] = delprobel(s);
+            commands[num]=(char *) malloc (100*sizeof(char));
+            commands[num] = delSpace(s);
 
             num++;
-            a = (char**) realloc (a,(num+1)*sizeof(char*));
+            commands = (char**) realloc (commands,(num+1)*sizeof(char*));
         }
     }
-    fclose(file);
+    fclose(f);
 
-    lenta = (int*) malloc (sizeof(int));
-    lenta[loc]=0;
-    commands(a, 0, num);
+    tape = (int*) malloc (sizeof(int));
+    tape[loc]=0;
+    doComand(commands, 0, num);
 
     for(i = 0; i < num; i++)
         free(a[num]);
     free(a);
-    printf("\nTape : ");
-    for(i = 0; i < size; i++)
-        printf("  %d", lenta[i]);
+    printf("\nLenta : ");
+    for(i = 0; i < sizeOfLenta; i++)
+        printf("  %d", tape[i]);
     return 0;
 }
