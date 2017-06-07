@@ -1,0 +1,202 @@
+
+Created by Kolesnik N.A.
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define NumOfCommands 256
+
+
+
+typedef struct E1
+{
+struct E1 *Left;
+int Count;
+struct E1 *Right;
+} E;
+
+
+long int AddCommand(char *out,char *Commands);
+
+
+int main(int argc,char *argv[])
+{
+    FILE *readFile;
+    char out[255],*Commands,ByteCh;
+    int flag=0;
+    int i=0,j;
+    long int NumCom=0;
+    E Word,*Pointer,*PointerBack;
+    E Stack,*PointerStack,*PointerStackBack;
+    if (argc>1)
+        {
+        readFile = fopen(argv[1],"r");
+        if (readFile==NULL){
+        while(1)
+        {
+            printf("\tUnknown file, pls try again\n\tEnter file name:\n\n");
+            scanf("%s",out);
+            readFile = fopen(out,"r");
+            if (readFile!=NULL)
+                break;
+                }
+            }
+        }
+
+    else while(1)
+        {
+            printf("\tEnter file name:\n\n");
+            scanf("%s",out);
+            readFile = fopen(out,"r");
+            if (readFile!=NULL)
+                break;
+            printf("\tUnknown file, pls try again\n\n");
+        }
+        Word.Left=NULL;Word.Right=NULL;Word.Count=0;
+        Stack.Left=NULL;Stack.Right=NULL;Stack.Count=-1;
+        Pointer=&Word;PointerStack=&Stack;
+
+        Commands=(char*)malloc(NumOfCommands*sizeof(char));
+        j=NumOfCommands;
+        while(fscanf(readFile,"%s",out)!=EOF)
+            {
+                if (NumCom==j)
+                {
+                    j+=NumOfCommands;
+                    Commands=(char*)realloc(Commands,j);
+                }
+                NumCom=AddCommand(out,Commands);
+        }
+
+        fclose(readFile);
+
+        while(i<=NumCom)
+            {
+        if (flag==0)
+        {
+            if (Commands[i]=='l')
+            {
+                if (Pointer->Left==NULL)
+                {
+                    Pointer->Left=(E*)malloc(sizeof(E));
+                    PointerBack=Pointer;
+                    Pointer=Pointer->Left;
+                    Pointer->Right=PointerBack;
+                    Pointer->Left=NULL;
+                    Pointer->Count=0;
+                }
+                else
+                    Pointer=Pointer->Left;
+            }
+            if (Commands[i]=='r')
+            {
+                if (Pointer->Right==NULL)
+                {
+                    Pointer->Right=(E*)malloc(sizeof(E));
+                    PointerBack=Pointer;
+                    Pointer=Pointer->Right;
+                    Pointer->Left=PointerBack;
+                    Pointer->Right=NULL;
+                    Pointer->Count=0;
+                }
+                else
+                    Pointer=Pointer->Right;
+            }
+        if (Commands[i]=='i')
+        {
+            Pointer->Count++;
+        if (Pointer->Count==256)
+        {
+            printf("Index out of range\n");
+            Pointer->Count=0;
+            }
+        }
+        if (Commands[i]=='d')
+        {
+            Pointer->Count--;
+            if (Pointer->Count==-1)
+            {
+                printf("Index out of range\n");
+                Pointer->Count=0;
+            }
+        }
+        if (Commands[i]=='t')
+            printf("%d\n",Pointer->Count);
+        if (Commands[i]=='c')
+            printf("%c\n",Pointer->Count);
+        if (Commands[i]=='g'){
+            fflush(stdin);
+            scanf("%c",&ByteCh);
+            fflush(stdin);
+            Pointer->Count=ByteCh;
+        }
+        }
+        if (Commands[i]=='b')
+        {
+            if (Pointer->Count==0)
+            {
+                flag=1;
+            }
+            PointerStack->Right=(E*)malloc(sizeof(E));
+            PointerStackBack=PointerStack;
+            PointerStack=PointerStack->Right;
+            PointerStack->Left=PointerStackBack;
+            PointerStack->Count=i;
+        }
+        if (Commands[i]=='e')
+        {
+            if (Pointer->Count==0)
+            {
+                PointerStack=PointerStack->Left;
+                free(PointerStack->Right);
+                flag=0;
+            } else
+                i=PointerStack->Count;
+        }
+        i++;
+    }
+}
+
+
+long int AddCommand(char *out,char *Commands)
+{
+    static long int i=0;
+    int j=0;
+    while((out[j]=='/t') || (out[j]==' '))
+        j++;
+
+    if (out[j]=='m' && out[j+3]=='l')
+        Commands[i]='l';
+
+    if (out[j]=='m' && out[j+3]=='r')
+        Commands[i]='r';
+
+    if (out[j]=='i')
+        Commands[i]='i';
+
+    if (out[j]=='d')
+        Commands[i]='d';
+
+    if (out[j]=='g')
+        Commands[i]='g';
+
+    if (out[j]=='p' && out[j+5]!='c')
+        Commands[i]='t';
+
+    if (out[j]=='p' && out[j+5]=='c')
+        Commands[i]='c';
+
+    if (out[j]=='b')
+        Commands[i]='b';
+
+    if (out[j]=='*')
+        return i;
+
+    if (out[j]=='e')
+        Commands[i]='e';
+    i++;
+    return i;
+
+}
+
