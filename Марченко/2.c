@@ -61,7 +61,7 @@ int dec (void) {
 return 0;
 }
 
-int doComand (char** a, int first, int last){
+int doCommands (char** a, int first, int last){
     int i, tmp = 0;
     for (i = first; i < last; i++){
         if (strcmp(a[i], "movr") == 0)
@@ -85,7 +85,7 @@ int doComand (char** a, int first, int last){
         else if (strcmp(a[i], "end") == 0)
             {
                 while (tape[loc] != 0)
-                    doComand(a, tmp, i);
+                    doCommands(a, tmp, i);
             }
         else
             printf("\nerror %s",a[i]);
@@ -116,29 +116,30 @@ int main(){
     while (f == NULL){
         printf(" Error opening file\n Enter a new filename");
         scanf("%s", fname);
-        file=fopen(fname, "r");
+        f=fopen(fname, "r");
     }
 
     commands=(char **) malloc (sizeof(char*));
-    while(fgets(s, 255, file)){
+    while(fgets(s, 255, f)){
 
         if(s[0] != '*'){
             commands[num]=(char *) malloc (100*sizeof(char));
             commands[num] = delSpace(s);
 
+
+            commands = (char**) realloc (commands,(num+2)*sizeof(char*));
             num++;
-            commands = (char**) realloc (commands,(num+1)*sizeof(char*));
         }
     }
     fclose(f);
 
     tape = (int*) malloc (sizeof(int));
     tape[loc]=0;
-    doComand(commands, 0, num);
+    doCommands(commands, 0, num);
 
     for(i = 0; i < num; i++)
-        free(a[num]);
-    free(a);
+        free(commands[num]);
+    free(commands);
     printf("\nLenta : ");
     for(i = 0; i < sizeOfLenta; i++)
         printf("  %d", tape[i]);
